@@ -285,22 +285,18 @@ def optimize_and_thermo(atom_block, temperature, dielectric=None):
 # --- Worker Function ---
 def process_task(args):
     smiles, solvent_name, dielectric, temp = args
-    try:
-        print(f"Processing: {smiles} in {solvent_name} at {temp} K")
-        geometry = smiles_to_geometry(smiles)
-        g_vac = optimize_and_thermo(geometry, temp, dielectric=None)
-        g_solv = optimize_and_thermo(geometry, temp, dielectric=dielectric)
-        delta_g = g_solv - g_vac
-        print(f"SUCCESS: {smiles} in {solvent_name} at {temp} K — ΔG = {delta_g} Hartrees")
-        return {
-            "SMILES": smiles,
-            "Solvent": solvent_name,
-            "Temperature (K)": temp,
-            "ΔG_solv (Hartrees)": delta_g
-        }
-    except Exception as e:
-        print(f"ERROR: {smiles} in {solvent_name} at {temp} K — {e}")
-        return None
+    print(f"Processing: {smiles} in {solvent_name} at {temp} K")
+    geometry = smiles_to_geometry(smiles)
+    g_vac = optimize_and_thermo(geometry, temp, dielectric=None)
+    g_solv = optimize_and_thermo(geometry, temp, dielectric=dielectric)
+    delta_g = g_solv - g_vac
+    print(f"SUCCESS: {smiles} in {solvent_name} at {temp} K — ΔG = {delta_g} Hartrees")
+    return {
+        "SMILES": smiles,
+        "Solvent": solvent_name,
+        "Temperature (K)": temp,
+        "ΔG_solv (Hartrees)": delta_g
+    }
 
 # --- Streamlit UI ---
 st.title("🔬 Solvation Free Energy Calculator (PySCF + Streamlit)")
