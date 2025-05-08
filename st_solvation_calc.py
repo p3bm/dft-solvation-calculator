@@ -263,7 +263,7 @@ def optimize_and_thermo(atom_block, temperature, dielectric=None):
 
     print(" --- DFT RESULTS AFTER OPTIMISATION --- \n",
                 f'HOMO (Hartrees) {homo}\n',
-                f'LUMO (Hartrees) {lumo\n}',
+                f'LUMO (Hartrees) {lumo}\n',
                 f'Dipole Moment (Debye) {dipole}\n',
                 f'Total Energy (Hartrees) {total_energy}\n',
                 f'Optimized XYZ {optimized_xyz}\n')
