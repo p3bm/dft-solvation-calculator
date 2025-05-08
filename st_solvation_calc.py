@@ -319,9 +319,11 @@ if run_button:
     
     with st.spinner(f"Running {len(job_args)} calculations..."):
         for i, job in enumerate(job_args):
-            st.progress((i + 1) / len(job_args))
             results.append(process_task(job))
+            st.progress((i + 1) / len(job_args))
 
+    print("\n === CALCULATIONS COMPLETE === \n")
+        
     results = [r for r in results if r]
     df = pd.DataFrame(results)
 
