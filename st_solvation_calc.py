@@ -9,7 +9,6 @@ from pyscf.geomopt import geometric_solver
 from datetime import datetime
 import os
 import numpy as np
-import geometric
 
 # --- Constants ---
 METHOD = 'B3LYP'
@@ -313,7 +312,7 @@ st.title("🔬 Solvation Free Energy Calculator (PySCF + Streamlit)")
 st.markdown("This app calculates solvation free energies using B3LYP/def2-SVP with PySCF in vacuum and solvent using ddCOSMO.")
 
 smiles_input = st.text_area("Enter SMILES strings (one per line)", "CCO\nCC(=O)O\nCCN")
-selected_solvents = st.multiselect("Select Solvents", list(DIELECTRIC_MAP.keys()), default=["DCM", "THF"])
+selected_solvents = st.multiselect("Select Solvents", list(DIELECTRIC_MAP.keys()), default=["dichloromethane", "tetrahydrofuran", "heptane"])
 run_button = st.button("Run Calculations")
 
 if run_button:
