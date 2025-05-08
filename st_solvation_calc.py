@@ -269,14 +269,14 @@ def optimize_and_thermo(atom_block, temperature, dielectric=None):
                 f'Optimized XYZ {optimized_xyz}\n')
 
     # Compute nuclear Hessian
-    hessian_matrix = mf.Hessian().kernel()
+    hessian_matrix = mf_optimized.Hessian().kernel()
 
     # Frequency analysis
-    freq_info = thermo.harmonic_analysis(mf.mol, hessian_matrix)
+    freq_info = thermo.harmonic_analysis(mf_optimized.mol, hessian_matrix)
     print(" --- VIBRTAIONAL FREQUENCIES --- \n", freq_info)
 
     # Thermochemistry analysis at specified temperature and 1 atm
-    thermo_info = thermo.thermo(mf, freq_info['freq_au'], temperature, pressure=101325)
+    thermo_info = thermo.thermo(mf_optimized, freq_info['freq_au'], temperature, pressure=101325)
     print(" --- THERMOCHEMISTRY --- \n", thermo_info)
 
     return thermo_info['G_tot']  # Return thermal Gibbs Free Energy
