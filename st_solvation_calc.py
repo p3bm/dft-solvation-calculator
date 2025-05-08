@@ -202,13 +202,8 @@ DIELECTRIC_MAP = {
 }
 NUM_PROCESSES = 1
 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-log_filename = f"log_{timestamp}.txt"
-log_path = os.path.join(os.getcwd(), log_filename)
-
-# --- Simple log function ---
-def write_log(message):
-    with open(log_path, "a") as f:
-        f.write(f"{datetime.now()} - {message}\n")
+print(f" --- START OF LOG ---")
+print(f" --- {timestamp} ---")
 
 # --- SMILES to geometry ---
 def smiles_to_geometry(smiles):
@@ -252,7 +247,7 @@ def optimize_and_thermo(atom_block, temperature, dielectric=None):
         dipole_vector = mf_optimized.dip_moment()
         total_energy = mf_optimized.e_tot
     else:
-        write_log("DFT geometry did not converge!")
+        print("DFT geometry did not converge!")
         raise RuntimeError("DFT geometry did not converge!")
 
     if mo_energies is not None and dipole_vector is not None:
@@ -266,7 +261,7 @@ def optimize_and_thermo(atom_block, temperature, dielectric=None):
                 for atom, (x, y, z) in zip(atoms, coords)
             )
 
-    write_log(" --- DFT RESULTS AFTER OPTIMISATION --- \n",
+    print(" --- DFT RESULTS AFTER OPTIMISATION --- \n",
                 f'HOMO (Hartrees) {homo}',
                 f'LUMO (Hartrees) {lumo}',
                 f'Dipole Moment (Debye) {dipole}',
@@ -278,11 +273,11 @@ def optimize_and_thermo(atom_block, temperature, dielectric=None):
 
     # Frequency analysis
     freq_info = thermo.harmonic_analysis(mf.mol, hessian_matrix)
-    write_log(" --- VIBRTAIONAL FREQUENCIES --- \n", freq_info)
+    print(" --- VIBRTAIONAL FREQUENCIES --- \n", freq_info)
 
     # Thermochemistry analysis at specified temperature and 1 atm
     thermo_info = thermo.thermo(mf, freq_info['freq_au'], temperature, pressure=101325)
-    write_log(" --- THERMOCHEMISTRY --- \n", thermo_info)
+    print(" --- THERMOCHEMISTRY --- \n", thermo_info)
 
     return thermo_info['G_tot']  # Return thermal Gibbs Free Energy
 
@@ -290,12 +285,12 @@ def optimize_and_thermo(atom_block, temperature, dielectric=None):
 def process_task(args):
     smiles, solvent_name, dielectric, temp = args
     try:
-        write_log(f"Processing: {smiles} in {solvent_name} at {temp} K")
+        print(f"Processing: {smiles} in {solvent_name} at {temp} K")
         geometry = smiles_to_geometry(smiles)
         g_vac = optimize_and_thermo(geometry, temp, dielectric=None)
         g_solv = optimize_and_thermo(geometry, temp, dielectric=dielectric)
         delta_g = g_solv[0] - g_vac[0]
-        write_log(f"SUCCESS: {smiles} in {solvent_name} at {temp} K — ΔG = {delta_g:.4f} kcal/mol")
+        print(f"SUCCESS: {smiles} in {solvent_name} at {temp} K — ΔG = {delta_g:.4f} kcal/mol")
         return {
             "SMILES": smiles,
             "Solvent": solvent_name,
@@ -303,7 +298,7 @@ def process_task(args):
             "ΔG_solv (kcal/mol)": round(delta_g, 4)
         }
     except Exception as e:
-        write_log(f"ERROR: {smiles} in {solvent_name} at {temp} K — {e}")
+        print(f"ERROR: {smiles} in {solvent_name} at {temp} K — {e}")
         return None
 
 # --- Streamlit UI ---
@@ -336,13 +331,3 @@ if run_button:
 
         csv = df.to_csv(index=False).encode()
         st.download_button("📥 Download Results CSV", csv, f"solvation_results_{timestamp}.csv", "text/csv")
-
-    # Display log file
-    st.subheader("📝 Log Output")
-    if os.path.exists(log_path):
-        with open(log_path, "r") as f:
-            st.text(f.read())
-        with open(log_path, "rb") as f:
-            st.download_button("📥 Download Log File", f, file_name=log_filename)
-    else:
-        st.info("No log file found.")
