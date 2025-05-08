@@ -13,6 +13,7 @@ import numpy as np
 # --- Constants ---
 METHOD = 'B3LYP'
 BASIS = 'STO-3G'
+SCALING_FACTOR = 0.9654
 TEMPERATURES = [293.15, 323.15]
 DIELECTRIC_MAP = {
     "water": 78.3553,
@@ -276,10 +277,10 @@ def optimize_and_thermo(atom_block, temperature, dielectric=None):
     print(" --- VIBRTAIONAL FREQUENCIES --- \n", freq_info)
 
     # Thermochemistry analysis at specified temperature and 1 atm
-    thermo_info = thermo.thermo(mf_optimized, freq_info['freq_au'], temperature, pressure=101325)
+    thermo_info = thermo.thermo(mf_optimized, freq_info['freq_au'] * SCALING_FACTOR, temperature, pressure=101325)
     print(" --- THERMOCHEMISTRY --- \n", thermo_info)
 
-    return thermo_info['G_tot']  # Return thermal Gibbs Free Energy
+    return thermo_info['G_tot'][0]  # Return thermal Gibbs Free Energy
 
 # --- Worker Function ---
 def process_task(args):
@@ -290,12 +291,12 @@ def process_task(args):
         g_vac = optimize_and_thermo(geometry, temp, dielectric=None)
         g_solv = optimize_and_thermo(geometry, temp, dielectric=dielectric)
         delta_g = g_solv - g_vac
-        print(f"SUCCESS: {smiles} in {solvent_name} at {temp} K — ΔG = {delta_g:.4f} kcal/mol")
+        print(f"SUCCESS: {smiles} in {solvent_name} at {temp} K — ΔG = {delta_g} Hartrees")
         return {
             "SMILES": smiles,
             "Solvent": solvent_name,
             "Temperature (K)": temp,
-            "ΔG_solv (kcal/mol)": round(delta_g, 4)
+            "ΔG_solv (Hartrees)": delta_g
         }
     except Exception as e:
         print(f"ERROR: {smiles} in {solvent_name} at {temp} K — {e}")
