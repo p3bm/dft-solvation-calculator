@@ -12,8 +12,8 @@ import numpy as np
 
 # --- Constants ---
 METHOD = 'B3LYP'
-BASIS = 'STO-3G'
-SCALING_FACTOR = 0.8924
+BASIS = '6-31G*'
+SCALING_FACTOR = 0.960
 TEMPERATURES = [293.15]
 DIELECTRIC_MAP = {
     "water": 78.3553,
@@ -292,7 +292,7 @@ def process_task(args):
         "SMILES": smiles,
         "Solvent": solvent_name,
         "Temperature (K)": temp,
-        "ΔG_solv (Hartrees)": delta_g
+        "ΔG_solv (kJ/mol)": delta_g * 2625.5
     }
 
 # --- Streamlit UI ---
