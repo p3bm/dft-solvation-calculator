@@ -262,11 +262,11 @@ def optimize_and_thermo(atom_block, temperature, dielectric=None):
             )
 
     print(" --- DFT RESULTS AFTER OPTIMISATION --- \n",
-                f'HOMO (Hartrees) {homo}',
-                f'LUMO (Hartrees) {lumo}',
-                f'Dipole Moment (Debye) {dipole}',
-                f'Total Energy (Hartrees) {total_energy}',
-                f'Optimized XYZ {optimized_xyz}')
+                f'HOMO (Hartrees) {homo}\n',
+                f'LUMO (Hartrees) {lumo\n}',
+                f'Dipole Moment (Debye) {dipole}\n',
+                f'Total Energy (Hartrees) {total_energy}\n',
+                f'Optimized XYZ {optimized_xyz}\n')
 
     # Compute nuclear Hessian
     hessian_matrix = mf.Hessian().kernel()
@@ -289,7 +289,7 @@ def process_task(args):
         geometry = smiles_to_geometry(smiles)
         g_vac = optimize_and_thermo(geometry, temp, dielectric=None)
         g_solv = optimize_and_thermo(geometry, temp, dielectric=dielectric)
-        delta_g = g_solv[0] - g_vac[0]
+        delta_g = g_solv - g_vac
         print(f"SUCCESS: {smiles} in {solvent_name} at {temp} K — ΔG = {delta_g:.4f} kcal/mol")
         return {
             "SMILES": smiles,
