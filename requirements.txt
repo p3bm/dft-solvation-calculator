@@ -1,8 +1,5 @@
 streamlit
 pandas
 numpy
-multiprocessing
 rdkit
 pyscf
-datetime
-os
