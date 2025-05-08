@@ -12,7 +12,7 @@ import numpy as np
 
 # --- Constants ---
 METHOD = 'B3LYP'
-BASIS = 'cc-pVDZ'
+BASIS = 'STO-3G'
 TEMPERATURES = [293.15, 323.15]
 DIELECTRIC_MAP = {
     "water": 78.3553,
@@ -200,7 +200,7 @@ DIELECTRIC_MAP = {
     "xylene-mixture": 2.3879,
     "z-1,2-dichloroethene": 9.2,
 }
-NUM_PROCESSES = min(4, cpu_count())
+NUM_PROCESSES = 1
 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 log_filename = f"log_{timestamp}.txt"
 log_path = os.path.join(os.getcwd(), log_filename)
