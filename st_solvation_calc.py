@@ -15,6 +15,8 @@ METHOD = 'B3LYP'
 BASIS = '6-31G*'
 SCALING_FACTOR = 0.960
 TEMPERATURES = [293.15]
+#NUM_PROCESSES = min(4, cpu_count())
+NUM_PROCESSES = 1
 DIELECTRIC_MAP = {
     "water": 78.3553,
     "acetonitrile": 35.688,
@@ -201,7 +203,6 @@ DIELECTRIC_MAP = {
     "xylene-mixture": 2.3879,
     "z-1,2-dichloroethene": 9.2,
 }
-NUM_PROCESSES = min(4, cpu_count())
 
 # --- SMILES to geometry ---
 def smiles_to_geometry(smiles):
