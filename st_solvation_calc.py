@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-from multiprocessing import Pool, cpu_count
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from pyscf import gto, dft
@@ -15,8 +14,6 @@ METHOD = 'B3LYP'
 BASIS = '6-31G*'
 SCALING_FACTOR = 0.960
 TEMPERATURES = [293.15]
-#NUM_PROCESSES = min(4, cpu_count())
-NUM_PROCESSES = 1
 DIELECTRIC_MAP = {
     "water": 78.3553,
     "acetonitrile": 35.688,
@@ -283,9 +280,10 @@ def optimize_and_thermo(atom_block, temperature, dielectric=None):
 # --- Worker Function ---
 def process_task(args):
     smiles, solvent_name, dielectric, temp = args
-    print(f"Processing: {smiles} in {solvent_name} at {temp} K")
     geometry = smiles_to_geometry(smiles)
+    print(f" --- Processing: {smiles} in vacuum at {temp} K --- ")
     g_vac = optimize_and_thermo(geometry, temp, dielectric=None)
+    print(f" --- Processing: {smiles} in {solvent_name} at {temp} K --- ")
     g_solv = optimize_and_thermo(geometry, temp, dielectric=dielectric)
     delta_g = g_solv - g_vac
     print(f"SUCCESS: {smiles} in {solvent_name} at {temp} K — ΔG = {delta_g} Hartrees")
@@ -317,9 +315,11 @@ if run_button:
         for temp in TEMPERATURES
     ]
 
-    with st.spinner(f"Running {len(job_args)} calculations using {NUM_PROCESSES} processes..."):
-        with Pool(NUM_PROCESSES) as pool:
-            results = pool.map(process_task, job_args)
+    results = []
+    
+    with st.spinner(f"Running {len(job_args)} calculations..."):
+        for job in job_args:
+            resulsts.append(process_task(job))
 
     results = [r for r in results if r]
     df = pd.DataFrame(results)
