@@ -227,14 +227,14 @@ def optimize_and_thermo(atom_block, temperature, dielectric=None):
     mol.build()
 
     mf = dft.RKS(mol)
-
     mol_optimized = geometric_solver.optimize(mf)
 
     if dielectric is None:
         mf_optimized = dft.RKS(mol_optimized)
         mf_optimized.xc = METHOD
     else:
-        mf_optimized = mol_optimized.RKS(xc=METHOD).PCM()
+        mf_optimized = dft.RKS(mol_optimized).PCM()
+        mf_optimized.xc = METHOD
         mf_optimized.with_solvent.method = 'IEF-PCM' # C-PCM, SS(V)PE, COSMO
         mf_optimized.with_solvent.eps = dielectric
 
