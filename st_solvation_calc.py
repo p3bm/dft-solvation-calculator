@@ -319,7 +319,7 @@ if run_button:
     
     with st.spinner(f"Running {len(job_args)} calculations..."):
         for job in job_args:
-            resulsts.append(process_task(job))
+            results.append(process_task(job))
 
     results = [r for r in results if r]
     df = pd.DataFrame(results)
