@@ -9,6 +9,7 @@ from pyscf.geomopt import geometric_solver
 from datetime import datetime
 import os
 import numpy as np
+import geometric
 
 # --- Constants ---
 METHOD = 'B3LYP'
