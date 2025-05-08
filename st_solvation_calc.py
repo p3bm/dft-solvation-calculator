@@ -266,24 +266,23 @@ def optimize_and_thermo(atom_block, temperature, dielectric=None):
                 for atom, (x, y, z) in zip(atoms, coords)
             )
 
-    write_log(" --- DFT RESULTS AFTER OPTIMISATION --- \n" + {
-                'HOMO (Hartrees)': homo,
-                'LUMO (Hartrees)': lumo,
-                'Dipole Moment (Debye)': dipole,
-                'Total Energy (Hartrees)': total_energy,
-                'Optimized XYZ': optimized_xyz
-            })
+    write_log(" --- DFT RESULTS AFTER OPTIMISATION --- \n",
+                f'HOMO (Hartrees) {homo}',
+                f'LUMO (Hartrees) {lumo}',
+                f'Dipole Moment (Debye) {dipole}',
+                f'Total Energy (Hartrees) {total_energy}',
+                f'Optimized XYZ {optimized_xyz}')
 
     # Compute nuclear Hessian
     hessian_matrix = mf.Hessian().kernel()
 
     # Frequency analysis
     freq_info = thermo.harmonic_analysis(mf.mol, hessian_matrix)
-    write_log(" --- VIBRTAIONAL FREQUENCIES --- \n" + freq_info)
+    write_log(" --- VIBRTAIONAL FREQUENCIES --- \n", freq_info)
 
     # Thermochemistry analysis at specified temperature and 1 atm
     thermo_info = thermo.thermo(mf, freq_info['freq_au'], temperature, pressure=101325)
-    write_log(" --- THERMOCHEMISTRY --- \n" + thermo_info)
+    write_log(" --- THERMOCHEMISTRY --- \n", thermo_info)
 
     return thermo_info['G_tot']  # Return thermal Gibbs Free Energy
 
@@ -312,7 +311,7 @@ st.title("🔬 Solvation Free Energy Calculator (PySCF + Streamlit)")
 st.markdown("This app calculates solvation free energies using B3LYP/def2-SVP with PySCF in vacuum and solvent using ddCOSMO.")
 
 smiles_input = st.text_area("Enter SMILES strings (one per line)", "CCO\nCC(=O)O\nCCN")
-selected_solvents = st.multiselect("Select Solvents", list(DIELECTRIC_MAP.keys()), default=["dichloromethane", "tetrahydrofuran", "heptane"])
+selected_solvents = st.multiselect("Select Solvents", list(DIELECTRIC_MAP.keys()), default=["dichloromethane", "tetrahydrofuran"])
 run_button = st.button("Run Calculations")
 
 if run_button:
