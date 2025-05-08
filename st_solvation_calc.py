@@ -318,7 +318,8 @@ if run_button:
     results = []
     
     with st.spinner(f"Running {len(job_args)} calculations..."):
-        for job in job_args:
+        for i, job in enumerate(job_args):
+            st.progress((i + 1) / len(job_args))
             results.append(process_task(job))
 
     results = [r for r in results if r]
