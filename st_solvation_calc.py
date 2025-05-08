@@ -13,8 +13,8 @@ import numpy as np
 # --- Constants ---
 METHOD = 'B3LYP'
 BASIS = 'STO-3G'
-SCALING_FACTOR = 0.9654
-TEMPERATURES = [293.15, 323.15]
+SCALING_FACTOR = 0.8924
+TEMPERATURES = [293.15]
 DIELECTRIC_MAP = {
     "water": 78.3553,
     "acetonitrile": 35.688,
@@ -201,10 +201,7 @@ DIELECTRIC_MAP = {
     "xylene-mixture": 2.3879,
     "z-1,2-dichloroethene": 9.2,
 }
-NUM_PROCESSES = 1
-timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-print(f" --- START OF LOG ---")
-print(f" --- {timestamp} ---")
+NUM_PROCESSES = min(4, cpu_count())
 
 # --- SMILES to geometry ---
 def smiles_to_geometry(smiles):
@@ -307,6 +304,10 @@ selected_solvents = st.multiselect("Select Solvents", list(DIELECTRIC_MAP.keys()
 run_button = st.button("Run Calculations")
 
 if run_button:
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    print(f" --- START OF LOG ---")
+    print(f" --- {timestamp} ---")
+        
     smiles_list = [s.strip() for s in smiles_input.splitlines() if s.strip()]
     job_args = [
         (smiles, solvent, DIELECTRIC_MAP[solvent], temp)
